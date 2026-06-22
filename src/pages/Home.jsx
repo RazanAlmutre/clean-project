@@ -14,8 +14,7 @@ export default function Home() {
         <img className="wel-burst" src="/sticker-confetti.png" alt="" />
         <img
           className="wel-logo-chip"
-          src="/kus-logo.png"
-          alt="King Saud University"
+        
         />
 
         <span
