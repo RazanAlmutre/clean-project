@@ -49,7 +49,7 @@ export default function Dashboard() {
       const when = a.created_at ? new Date(a.created_at) : null;
 
       if (when) {
-        when.setHours(when.getHours() + 3);
+        when.setHours(when.getHours() );
       }
       console.log("created_at =", a.created_at);
 
