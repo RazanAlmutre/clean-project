@@ -1,0 +1,73 @@
+/* Base reset — the Confetti Pop theme lives in Styles/theme.css */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* مهم جدًا لمنع الزحمة الجانبية */
+}
+
+body {
+  font-family: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #34415c;
+  background: #f3f8fe;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* root */
+#root {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* form defaults */
+button,
+input,
+select {
+  font-family: inherit;
+}
+
+/* 🔥 IMPORTANT: prevent mobile zoom & layout break */
+input,
+select,
+textarea {
+  font-size: 16px;
+  max-width: 100%;
+}
+
+/* =========================
+   RESPONSIVE FOUNDATION
+========================= */
+
+/* tablets */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+}
+
+/* phones */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  #root {
+    padding: 0;
+  }
+}
