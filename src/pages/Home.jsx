@@ -14,18 +14,19 @@ export default function Home() {
         <img className="wel-burst" src="/sticker-confetti.png" alt="" />
         <img
           className="wel-logo-chip"
-        
+          src="/kus-logo.png"
+          alt="King Saud University"
         />
 
         <span
           className="wel-balloon"
-          style={{
-            top: 150,
-            left: 40,
-            width: 34,
-            height: 42,
-            background: "radial-gradient(circle at 35% 28%,#f6dd9a,#e9b949)",
-          }}
+style={{
+  top: 150,
+  left: 40,
+  width: 30,
+  height: 38,
+  background: "radial-gradient(circle at 35% 28%, #f6dd9a, #e9b949)",
+}}
         >
           <i style={{ borderTop: "6px solid #e9b949" }} />
           <b />
