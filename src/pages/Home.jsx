@@ -21,7 +21,7 @@ export default function Home() {
         <span
           className="wel-balloon"
 style={{
-  top: 150,
+  top: 100,
   left: 40,
   width: 20,
   height: 28,
