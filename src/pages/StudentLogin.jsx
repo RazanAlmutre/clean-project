@@ -12,17 +12,6 @@ export default function StudentLogin() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const normalizeSerial = (value) => {
-    let v = value.trim();
-
-    // يحول 1.0 → 1
-    if (v.endsWith(".0")) {
-      v = v.replace(".0", "");
-    }
-
-    return v;
-  };
-
   const submit = async () => {
     setErrorMsg("");
 
@@ -33,42 +22,46 @@ export default function StudentLogin() {
 
     setLoading(true);
 
-    const input = normalizeSerial(serial);
+    const inputSerial = serial.trim();
 
-    // نجيب كل الطلاب ونقارن محلياً (حل مضمون 100%)
-    const { data, error } = await supabase.from("students").select("*");
-
-    setLoading(false);
+    // 1) نجيب كل الطلاب اللي نفس الرقم
+    const { data, error } = await supabase
+      .from("students")
+      .select("*")
+      .eq("student_id", inputSerial);
 
     if (error) {
+      setLoading(false);
       setErrorMsg("Server error");
       return;
     }
 
-    const student = data?.find((s) => {
-      const dbSerial = normalizeSerial(String(s.student_id));
-      return dbSerial === input;
-    });
-
-    if (!student) {
+    if (!data || data.length === 0) {
+      setLoading(false);
       setErrorMsg("Student not found");
       return;
     }
 
-    if (
-      (student.degree || "").trim().toLowerCase() !==
-      degree.trim().toLowerCase()
-    ) {
+    // 2) نطابق الدرجة
+    const student = data.find(
+      (s) =>
+        (s.degree || "").trim().toUpperCase() === degree.trim().toUpperCase(),
+    );
+
+    if (!student) {
+      setLoading(false);
       setErrorMsg("Degree does not match this serial number");
       return;
     }
 
+    // 3) حفظ البيانات
     localStorage.setItem("studentDbId", student.id);
     localStorage.setItem("studentId", student.student_id);
     localStorage.setItem("studentName", student.student_name);
-    localStorage.setItem("studentDegree", student.degree || degree);
+    localStorage.setItem("studentDegree", student.degree);
     localStorage.setItem("role", "student");
 
+    setLoading(false);
     navigate("/student");
   };
 
@@ -107,7 +100,7 @@ export default function StudentLogin() {
         <input
           className="auth-field"
           type="text"
-          inputMode="decimal"
+          inputMode="numeric"
           placeholder="Serial Number"
           value={serial}
           onChange={(e) => setSerial(e.target.value)}
