@@ -42,7 +42,7 @@
    top:30px;
     left:24px;
      z-index:3;
-     margin-top: 40px;
+     
       width:182px;
        height:78px;
         object-fit:contain; } 
@@ -133,12 +133,14 @@
      
 .wel-balloon{ position:absolute;
    border-radius:50%;
+
     box-shadow:inset -3px -5px 7px rgba(0,0,0,.1);
      z-index:1;
       animation:ksuSway 5.5s ease-in-out infinite; } 
       
 .wel-balloon i{ position:absolute;
    bottom:-5px;
+   margin-top:40px;
     left:50%;
      transform:translateX(-50%);
       width:0;
