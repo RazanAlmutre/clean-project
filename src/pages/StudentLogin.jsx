@@ -25,6 +25,7 @@ export default function StudentLogin() {
     const inputSerial = serial.trim();
 
     // 1) نجيب كل الطلاب اللي نفس الرقم
+    console.log("Searching for:", inputSerial);
     const { data, error } = await supabase
       .from("students")
       .select("*")
