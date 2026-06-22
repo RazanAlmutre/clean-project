@@ -28,7 +28,7 @@ style={{
   background: "radial-gradient(circle at 35% 28%, #f6dd9a, #e9b949)",
 }}
         >
-          <i style={{ borderTop: "6px solid #e9b949" }} />
+          <i style={{ borderTop: "4px solid #e9b949" }} />
           <b />
         </span>
 
