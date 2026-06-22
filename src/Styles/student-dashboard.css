@@ -1,0 +1,78 @@
+/* ===== Student Dashboard ===== */
+.sd-page{ min-height:100svh; background:#f3f8fe; display:flex; flex-direction:column; }
+
+.sd-header{ background:#fff; border-bottom:1px solid #e8eef6; display:flex; align-items:center; justify-content:space-between; padding:16px 40px; }
+.sd-header .logo{ height:42px; width:95px; object-fit:contain; }
+.sd-user{ display:flex; align-items:center; gap:14px; }
+.sd-user .meta{ text-align:right; }
+.sd-user .meta .nm{ font-family:var(--font-head); font-weight:700; font-size:15px; color:var(--ksu-ink); line-height:1.1; }
+.sd-user .meta .sr{ font-size:12px; color:#9aa6bd; }
+.sd-logout{ border:1px solid #e2ecf8; background:#fff; color:#5a6b86; border-radius:11px; padding:9px 14px;
+  font-family:var(--font-body); font-weight:700; font-size:13px; cursor:pointer; }
+.sd-logout:hover{ background:#f3f8fe; }
+
+.sd-body{ flex:1; position:relative; overflow:hidden; padding:36px 40px; width:100%; max-width:1180px; margin:0 auto; }
+.sd-greet{ display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+.sd-greet h1{ font-family:var(--font-head); font-weight:800; font-size:34px; color:var(--ksu-ink); margin:0; }
+.sd-greet p{ font-size:16px; color:#9aa6bd; margin:6px 0 0; }
+.sd-live{ display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:800; color:var(--ksu-navy);
+  background:#fff; border:1px solid #e2ecf8; padding:11px 16px; border-radius:30px; white-space:nowrap; }
+.sd-live .dot{ width:8px; height:8px; border-radius:50%; background:var(--ksu-green); animation:ksuPulse 2s infinite; }
+
+.sd-grid{ display:grid; grid-template-columns:380px 1fr; gap:28px; margin-top:30px; }
+.sd-card{ background:#fff; border-radius:24px; box-shadow:0 1px 3px rgba(11,42,94,.06); }
+.sd-profile{ padding:34px; display:flex; flex-direction:column; align-items:center; text-align:center; }
+.sd-profile h3{ font-family:var(--font-head); font-weight:700; font-size:23px; color:var(--ksu-ink); margin:18px 0 2px; }
+.sd-profile p{ font-size:14px; color:#9aa6bd; margin:0; }
+.sd-chips{ width:100%; display:flex; gap:12px; margin-top:24px; }
+.sd-chip{ flex:1; background:var(--ksu-mist); border-radius:16px; padding:14px; }
+.sd-chip .k{ font-size:11px; font-weight:800; color:#9aa6bd; text-transform:uppercase; letter-spacing:.6px; }
+.sd-chip .v{ font-family:var(--font-head); font-weight:700; font-size:18px; color:var(--ksu-ink); }
+
+.sd-main{ display:flex; flex-direction:column; gap:24px; }
+.sd-status{ position:relative; overflow:hidden; border-radius:24px; padding:38px; display:flex; align-items:center; gap:26px; }
+.sd-status.present{ background:linear-gradient(135deg,#eafaf1,#d8f3e3); }
+.sd-status.pending{ background:#fff; box-shadow:0 1px 3px rgba(11,42,94,.06); }
+.sd-status .burst{ position:absolute; top:-30px; right:-20px; width:200px; height:168px; object-fit:contain; opacity:.5; pointer-events:none; }
+.sd-status .badge{ width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:42px; flex:none; color:#fff; position:relative; }
+.sd-status.present .badge{ background:var(--ksu-green); box-shadow:0 12px 22px -8px rgba(57,192,122,.7); }
+.sd-status.pending .badge{ background:var(--ksu-pale); color:var(--ksu-navy); }
+.sd-status .txt{ position:relative; }
+.sd-status .txt .lab{ font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.8px; color:#5b9c78; }
+.sd-status.pending .txt .lab{ color:#9aa6bd; }
+.sd-status .txt .big{ font-family:var(--font-head); font-weight:800; font-size:32px; line-height:1.1; color:var(--ksu-green-d); }
+.sd-status.pending .txt .big{ color:var(--ksu-ink); }
+.sd-status .txt .sub{ font-size:14px; margin-top:4px; color:#5b9c78; }
+.sd-status.pending .txt .sub{ color:#9aa6bd; }
+
+.sd-count{ padding:28px; }
+.sd-count .top{ display:flex; justify-content:space-between; align-items:baseline; }
+.sd-count .title{ font-family:var(--font-head); font-weight:700; font-size:17px; color:var(--ksu-ink); }
+.sd-count .num{ font-family:var(--font-head); font-weight:800; font-size:17px; color:var(--ksu-navy); }
+.sd-bar{ margin-top:14px; height:12px; border-radius:8px; background:#e9f0f9; overflow:hidden; }
+.sd-bar > i{ display:block; height:100%; border-radius:8px; background:linear-gradient(90deg,var(--ksu-blue2),var(--ksu-navy)); transition:width .9s ease; }
+.sd-count .note{ margin-top:12px; font-size:14px; color:#9aa6bd; }
+.sd-count .note strong{ color:var(--ksu-navy); }
+
+@media (max-width: 880px){
+  .sd-grid{ grid-template-columns:1fr; }
+  .sd-body{ padding:24px 18px; }
+  .sd-header{ padding:14px 18px; }
+  .sd-greet h1{ font-size:28px; }
+}
+/* phone */
+@media (max-width: 560px){
+  .sd-header{ padding:12px 16px; }
+  .sd-header .logo{ height:34px; width:78px; }
+  .sd-user{ gap:10px; }
+  .sd-user .meta .nm{ font-size:14px; }
+  .sd-logout{ padding:8px 11px; font-size:12px; }
+  .sd-body{ padding:20px 14px; }
+  .sd-greet{ flex-direction:column; gap:12px; }
+  .sd-greet h1{ font-size:25px; }
+  .sd-grid{ gap:18px; margin-top:22px; }
+  .sd-profile{ padding:26px; }
+  .sd-status{ padding:24px; gap:16px; flex-direction:column; text-align:center; }
+  .sd-status .badge{ width:68px; height:68px; font-size:34px; }
+  .sd-status .txt .big{ font-size:26px; }
+}

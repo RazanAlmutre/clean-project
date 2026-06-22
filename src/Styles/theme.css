@@ -1,0 +1,53 @@
+/* ===== KSU Graduation — Confetti Pop theme ===== */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --ksu-navy:#0B3D91;
+  --ksu-blue:#2f6fc4;
+  --ksu-blue2:#4a90d9;
+  --ksu-light:#8fbdec;
+  --ksu-pale:#cfe3f7;
+  --ksu-mist:#eef5fc;
+  --ksu-ink:#0B2A5E;
+  --ksu-slate:#7a89a3;
+  --ksu-gold:#e9b949;
+  --ksu-green:#39c07a;
+  --ksu-green-d:#1d875a;
+  --font-head:'Baloo 2', system-ui, sans-serif;
+  --font-body:'Nunito', system-ui, sans-serif;
+}
+
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:var(--font-body); color:#34415c; }
+#root{ width:100%; min-height:100svh; }
+
+@keyframes ksuFloat{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-9px) rotate(var(--r,0deg))}}
+@keyframes ksuSway{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+@keyframes ksuPulse{0%{box-shadow:0 0 0 0 rgba(57,192,122,.5)}70%{box-shadow:0 0 0 9px rgba(57,192,122,0)}100%{box-shadow:0 0 0 0 rgba(57,192,122,0)}}
+@keyframes ksuPop{0%{transform:scale(.7);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+
+/* ---- buttons ---- */
+.ksu-btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:16px 18px; border:none; border-radius:18px; font-family:var(--font-head); font-weight:600; font-size:17px; cursor:pointer; transition:transform .15s, background .15s, opacity .15s; }
+.ksu-btn:disabled{ opacity:.6; cursor:default; }
+.ksu-btn-primary{ background:linear-gradient(135deg,var(--ksu-navy),var(--ksu-blue)); color:#fff; box-shadow:0 16px 30px -14px rgba(11,61,145,.8); }
+.ksu-btn-primary:not(:disabled):hover{ transform:translateY(-2px); }
+.ksu-btn-ghost{ background:#fff; color:var(--ksu-navy); border:2px solid var(--ksu-pale); }
+.ksu-btn-ghost:not(:disabled):hover{ background:var(--ksu-mist); }
+.ksu-btn-green{ background:var(--ksu-green); color:#fff; box-shadow:0 16px 28px -12px rgba(57,192,122,.7); }
+.ksu-btn-green:not(:disabled):hover{ transform:translateY(-2px); }
+
+/* ---- cap-on-initial avatar ---- */
+.cap-avatar{ position:relative; display:inline-block; flex:none; }
+.cap-avatar__circle{ position:absolute; bottom:0; left:0; width:100%; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-head); font-weight:800; background:var(--ksu-mist); color:var(--ksu-navy); }
+.cap-avatar__cap{ position:absolute; left:50%; transform:translateX(-50%) rotate(-6deg); object-fit:contain; pointer-events:none; }
+
+/* ---- confetti paper dots ---- */
+.ksu-paper{ position:absolute; pointer-events:none; z-index:1; }
+.ksu-confetti{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1; }
+/* keep real page content above the confetti layer */
+.wel-right > :not(.ksu-confetti), .sd-body > :not(.ksu-confetti), .adm-body > :not(.ksu-confetti){ position:relative; z-index:2; }
+
+/* ---- scrollbar ---- */
+.ksu-scroll::-webkit-scrollbar{ width:9px; }
+.ksu-scroll::-webkit-scrollbar-thumb{ background:#cdddee; border-radius:6px; }
+.ksu-scroll::-webkit-scrollbar-track{ background:transparent; }
