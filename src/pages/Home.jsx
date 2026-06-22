@@ -23,8 +23,8 @@ export default function Home() {
 style={{
   top: 150,
   left: 40,
-  width: 30,
-  height: 38,
+  width: 20,
+  height: 28,
   background: "radial-gradient(circle at 35% 28%, #f6dd9a, #e9b949)",
 }}
         >
