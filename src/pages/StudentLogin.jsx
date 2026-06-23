@@ -101,7 +101,7 @@ export default function StudentLogin() {
         <input
           className="auth-field"
           type="text"
-          inputMode="numeric"
+          inputMode="decimal"
           placeholder="Serial Number"
           value={serial}
           onChange={(e) => setSerial(e.target.value)}
