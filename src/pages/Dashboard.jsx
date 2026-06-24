@@ -62,12 +62,17 @@ export default function Dashboard() {
           })
         : "";
 
+       // Present from 8:00 AM to 12:30 PM; anyone outside that window is "Late"
+      const mins = when ? when.getHours() * 60 + when.getMinutes() : 0;
+      const late = when ? mins < 8 * 60 || mins > 12 * 60 + 30 : false;
+
       return {
         id: a.student_id,
         name: s.student_name || "Graduate",
         serial: s.student_id || "—",
         degree: s.degree || "—",
         time,
+        late,
       };
     });
 
@@ -198,10 +203,19 @@ export default function Dashboard() {
                     <span className="sr">#{s.serial}</span>
                     <span className="cl">{s.degree}</span>
 
-                    <span className="pill-present">
-                      <span className="dot" />
-                      Present
-                    </span>
+                     {s.late ? (
+                      <span
+                        className="pill-absent"
+                        style={{ color: "#c2410c", background: "#fde9d8" }}
+                      >
+                        Late
+                      </span>
+                    ) : (
+                      <span className="pill-present">
+                        <span className="dot" />
+                        Present
+                      </span>
+                    )}
 
                     <span className="sr tm" style={{ color: "#0B2A5E" }}>
                       {s.time}
