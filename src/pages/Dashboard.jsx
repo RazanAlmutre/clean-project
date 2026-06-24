@@ -11,10 +11,56 @@ export default function Dashboard() {
   const [recent, setRecent] = useState([]); // every check-in, newest first
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
+  const [absentList, setAbsentList] = useState([]);
+  const [pickId, setPickId] = useState("");
+  const [marking, setMarking] = useState(false);
 
   useEffect(() => {
     load();
+    loadAbsent();
   }, []);
+
+  // list of students who have NOT checked in yet
+  const loadAbsent = async () => {
+    let all = [];
+    let from = 0;
+    const pageSize = 1000;
+    while (true) {
+      const { data } = await supabase
+        .from("students")
+        .select("id, student_id, student_name, degree")
+        .order("student_name", { ascending: true })
+        .range(from, from + pageSize - 1);
+      all = [...all, ...(data || [])];
+      if (!data || data.length < pageSize) break;
+      from += pageSize;
+    }
+    const { data: att } = await supabase
+      .from("attendance")
+      .select("student_id");
+    const presentIds = new Set((att || []).map((a) => Number(a.student_id)));
+    setAbsentList(all.filter((s) => !presentIds.has(Number(s.id))));
+  };
+
+  // manually mark a not-yet-arrived student as attended
+  const markPresent = async () => {
+    if (!pickId) return;
+    setMarking(true);
+    const { error } = await supabase
+      .from("attendance")
+      .upsert(
+        { student_id: Number(pickId) },
+        { onConflict: "student_id,attendance_date" },
+      );
+    setMarking(false);
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    setPickId("");
+    await load();
+    await loadAbsent();
+  };
 
   const load = async () => {
     setLoading(true);
@@ -144,6 +190,57 @@ export default function Dashboard() {
                 {present.toLocaleString()} of {total.toLocaleString()} graduates
                 checked in
               </div>
+            </div>
+          </div>
+
+                    {/* manual mark-present */}
+          <div
+            className="adm-panel"
+            style={{ flex: "none", marginTop: 20, padding: "18px 22px" }}
+          >
+            <div className="adm-panel-title" style={{ marginBottom: 14 }}>
+              Mark a student as attended{" "}
+              <span>· {absentList.length} not arrived</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <select
+                value={pickId}
+                onChange={(e) => setPickId(e.target.value)}
+                style={{
+                  flex: 1,
+                  minWidth: 240,
+                  padding: "12px 14px",
+                  borderRadius: 12,
+                  border: "1px solid #dbe8f6",
+                  background: "#f3f8fe",
+                  color: "#34415c",
+                  fontSize: 14,
+                  fontFamily: "var(--font-body)",
+                }}
+              >
+                <option value="">Select a not-yet-arrived student…</option>
+                {absentList.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.student_name} · #{s.student_id}
+                    {s.degree ? " · " + s.degree : ""}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="ksu-btn ksu-btn-green"
+                style={{ width: "auto", padding: "12px 20px" }}
+                onClick={markPresent}
+                disabled={!pickId || marking}
+              >
+                {marking ? "Saving…" : "Mark as attended"}
+              </button>
             </div>
           </div>
 
