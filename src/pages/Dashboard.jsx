@@ -100,7 +100,7 @@ export default function Dashboard() {
       <main className="adm-main">
         <header className="adm-header">
           <div>
-            <h1>Welcome back, {adminName} 🎓</h1>
+            <h1>Welcome back, {adminName} </h1>
             <p>Graduation Attendance · Overview · Class of 2026</p>
           </div>
 
