@@ -13,11 +13,17 @@ export default function Dashboard() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    load();
+    load(true);
+
+    const interval = setInterval(() => {
+      load(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
 
     const { count: totalCount } = await supabase
       .from("students")
@@ -29,7 +35,6 @@ export default function Dashboard() {
       .order("created_at", { ascending: false });
 
     const rows = att || [];
-
     const ids = [...new Set(rows.map((a) => a.student_id))];
 
     let byId = {};
