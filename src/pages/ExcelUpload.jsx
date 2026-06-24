@@ -7,20 +7,36 @@ import Confetti from "../components/Confetti";
 import "../Styles/admin.css";
 
 export default function ExcelUpload() {
-   const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [counts, setCounts] = useState({ present: null, absent: null });
 
   useEffect(() => {
-    (async () => {
-      const { count: total } = await supabase
-        .from("students")
-        .select("*", { count: "exact", head: true });
-      const { data: att } = await supabase.from("attendance").select("student_id");
-      const present = new Set((att || []).map((a) => Number(a.student_id))).size;
-      setCounts({ present, absent: Math.max((total || 0) - present, 0) });
-    })();
+    loadCounts();
+
+    const interval = setInterval(() => {
+      loadCounts();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  const loadCounts = async () => {
+    const { count: total } = await supabase
+      .from("students")
+      .select("*", { count: "exact", head: true });
+
+    const { data: att } = await supabase
+      .from("attendance")
+      .select("student_id");
+
+    const present = new Set((att || []).map((a) => Number(a.student_id))).size;
+
+    setCounts({
+      present,
+      absent: Math.max((total || 0) - present, 0),
+    });
+  };
 
   const handleUpload = async () => {
     try {
@@ -42,12 +58,16 @@ export default function ExcelUpload() {
         return;
       }
 
-      // قراءة الهيدر
-      const header1 = String(worksheet.getCell("A1").value || "").trim();
-      const header2 = String(worksheet.getCell("B1").value || "").trim();
-      const header3 = String(worksheet.getCell("C1").value || "").trim();
+      const header1 = String(worksheet.getCell("A1").value || "")
+        .trim()
+        .toLowerCase();
+      const header2 = String(worksheet.getCell("B1").value || "")
+        .trim()
+        .toLowerCase();
+      const header3 = String(worksheet.getCell("C1").value || "")
+        .trim()
+        .toLowerCase();
 
-      // دعم أكثر من صيغة
       const validHeaders =
         header1.includes("student") &&
         header2.includes("name") &&
@@ -55,7 +75,7 @@ export default function ExcelUpload() {
 
       if (!validHeaders) {
         alert(
-          "Invalid file format. Required: student_id, student_name, degree",
+          "Invalid file format. Required: student_id, student_name, degree"
         );
         return;
       }
@@ -83,7 +103,6 @@ export default function ExcelUpload() {
         return;
       }
 
-      // إدخال البيانات
       const { error } = await supabase.from("students").upsert(students, {
         onConflict: "student_id",
       });
@@ -96,6 +115,7 @@ export default function ExcelUpload() {
 
       alert(`Uploaded successfully: ${students.length} students`);
       setFile(null);
+      await loadCounts();
     } catch (err) {
       console.error(err);
       alert(err.message || "Upload failed");
