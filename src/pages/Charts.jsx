@@ -73,19 +73,13 @@ export default function Charts() {
           </span>
         </header>
 
-        <div className="adm-body">
+        <div className="adm-body" style={{ overflowY: "auto" }}>
           <Confetti count={18} />
           {loading ? (
             <div className="adm-loading">Loading…</div>
           ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "300px 1fr",
-                gap: 20,
-                minHeight: 0,
-              }}
-            >
+                        <div className="adm-charts-grid">
+
               {/* rate ring */}
               <div
                 className="sd-card"
