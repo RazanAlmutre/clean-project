@@ -15,6 +15,9 @@ export default function PresentStudents() {
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+
   useEffect(() => {
     fetchPresentStudents();
   }, []);
@@ -82,24 +85,34 @@ export default function PresentStudents() {
     setLoading(false);
   };
 
-  const deleteAttendance = async (studentDbId) => {
-    const ok = window.confirm(
-      "Are you sure you want to remove this student's attendance?"
-    );
+  const openDeleteModal = (studentDbId) => {
+    setSelectedStudentId(studentDbId);
+    setShowDeleteModal(true);
+  };
 
-    if (!ok) return;
+  const closeDeleteModal = () => {
+    setSelectedStudentId(null);
+    setShowDeleteModal(false);
+  };
+
+  const deleteAttendance = async () => {
+    if (!selectedStudentId) return;
 
     const { error } = await supabase
       .from("attendance")
       .delete()
-      .eq("student_id", studentDbId);
+      .eq("student_id", selectedStudentId);
 
     if (error) {
       alert(error.message);
       return;
     }
 
-    setStudents((prev) => prev.filter((s) => s.id !== studentDbId));
+    setStudents((prev) =>
+      prev.filter((s) => s.id !== selectedStudentId)
+    );
+
+    closeDeleteModal();
   };
 
   const filtered = useMemo(() => {
@@ -246,7 +259,7 @@ export default function PresentStudents() {
 
                       <button
                         className="remove-attendance"
-                        onClick={() => deleteAttendance(s.id)}
+                        onClick={() => openDeleteModal(s.id)}
                         title="Remove attendance"
                       >
                         <X size={16} strokeWidth={2.5} />
@@ -289,6 +302,26 @@ export default function PresentStudents() {
           </div>
         </div>
       </main>
+
+      {showDeleteModal && (
+        <div className="delete-modal-overlay">
+          <div className="delete-modal">
+            <h3>هل أنت متأكد؟</h3>
+
+            <p>هل تريد حذف حضور هذه الطالبة؟</p>
+
+            <div className="delete-modal-actions">
+              <button className="cancel-btn" onClick={closeDeleteModal}>
+                إلغاء
+              </button>
+
+              <button className="confirm-btn" onClick={deleteAttendance}>
+                نعم، احذف
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
