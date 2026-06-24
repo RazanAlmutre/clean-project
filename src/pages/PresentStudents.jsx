@@ -19,11 +19,17 @@ export default function PresentStudents() {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   useEffect(() => {
-    fetchPresentStudents();
+    fetchPresentStudents(true);
+
+    const interval = setInterval(() => {
+      fetchPresentStudents(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchPresentStudents = async () => {
-    setLoading(true);
+  const fetchPresentStudents = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
 
     const { count, error: countError } = await supabase
       .from("students")
@@ -59,6 +65,7 @@ export default function PresentStudents() {
     }
 
     const timeById = {};
+
     (attendanceData || []).forEach((a) => {
       timeById[Number(a.student_id)] = a.attendance_date;
     });
@@ -81,7 +88,15 @@ export default function PresentStudents() {
     }));
 
     setStudents(enriched);
-    setCurrentPage(1);
+
+    setCurrentPage((page) => {
+      const newTotalPages = Math.max(
+        1,
+        Math.ceil(enriched.length / PAGE_SIZE)
+      );
+      return Math.min(page, newTotalPages);
+    });
+
     setLoading(false);
   };
 
@@ -108,15 +123,15 @@ export default function PresentStudents() {
       return;
     }
 
-    setStudents((prev) =>
-      prev.filter((s) => s.id !== selectedStudentId)
-    );
+    setStudents((prev) => prev.filter((s) => s.id !== selectedStudentId));
 
     closeDeleteModal();
+    await fetchPresentStudents(false);
   };
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+
     if (!q) return students;
 
     return students.filter(
@@ -306,17 +321,17 @@ export default function PresentStudents() {
       {showDeleteModal && (
         <div className="delete-modal-overlay">
           <div className="delete-modal">
-            <h3>هل أنت متأكد؟</h3>
+            <h3>Are you sure?</h3>
 
-            <p>هل تريد حذف حضور هذه الطالبة؟</p>
+            <p>Do you want to remove this student's attendance?</p>
 
             <div className="delete-modal-actions">
               <button className="cancel-btn" onClick={closeDeleteModal}>
-                إلغاء
+                Cancel
               </button>
 
               <button className="confirm-btn" onClick={deleteAttendance}>
-                نعم، احذف
+                Yes, remove
               </button>
             </div>
           </div>
