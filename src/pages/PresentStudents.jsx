@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, X } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import CapAvatar from "../components/CapAvatar";
 import Confetti from "../components/Confetti";
@@ -82,6 +82,26 @@ export default function PresentStudents() {
     setLoading(false);
   };
 
+  const deleteAttendance = async (studentDbId) => {
+    const ok = window.confirm(
+      "Are you sure you want to remove this student's attendance?"
+    );
+
+    if (!ok) return;
+
+    const { error } = await supabase
+      .from("attendance")
+      .delete()
+      .eq("student_id", studentDbId);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setStudents((prev) => prev.filter((s) => s.id !== studentDbId));
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return students;
@@ -89,9 +109,7 @@ export default function PresentStudents() {
     return students.filter(
       (s) =>
         (s.student_name || "").toLowerCase().includes(q) ||
-        String(s.student_id || "")
-          .toLowerCase()
-          .includes(q),
+        String(s.student_id || "").toLowerCase().includes(q)
     );
   }, [students, query]);
 
@@ -215,13 +233,25 @@ export default function PresentStudents() {
                 paginatedStudents.map((s) => (
                   <div key={s.id} className="adm-row">
                     <CapAvatar name={s.student_name} size={40} />
+
                     <span className="nm">{s.student_name}</span>
                     <span className="sr">#{s.student_id}</span>
                     <span className="cl">{s.degree || "—"}</span>
-                    <span className="pill-present">
-                      <span className="dot" />
-                      Present
-                    </span>
+
+                    <div className="present-action">
+                      <span className="pill-present">
+                        <span className="dot" />
+                        Present
+                      </span>
+
+                      <button
+                        className="remove-attendance"
+                        onClick={() => deleteAttendance(s.id)}
+                        title="Remove attendance"
+                      >
+                        <X size={16} strokeWidth={2.5} />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
