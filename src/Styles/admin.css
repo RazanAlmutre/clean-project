@@ -359,3 +359,59 @@
     overflow-y:auto;
   }
 }
+.delete-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.delete-modal{
+  background:#fff;
+  width:420px;
+  max-width:90%;
+  border-radius:20px;
+  padding:24px;
+  text-align:center;
+  box-shadow:0 15px 40px rgba(0,0,0,.15);
+}
+
+.delete-modal h3{
+  margin:0 0 10px;
+  color:#0B3D91;
+  font-size:22px;
+}
+
+.delete-modal p{
+  color:#6b7280;
+  margin-bottom:20px;
+}
+
+.delete-modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+}
+
+.cancel-btn{
+  border:none;
+  background:#eef2f7;
+  color:#374151;
+  padding:10px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.confirm-btn{
+  border:none;
+  background:#0B3D91;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
