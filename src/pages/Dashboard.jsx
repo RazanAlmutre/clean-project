@@ -198,7 +198,7 @@ export default function Dashboard() {
                       Present
                     </span>
 
-                    <span className="sr tm" style={{ color: "#ee0703" }}>
+                    <span className="sr tm" style={{ color: "#0B2A5E" }}>
                       {s.time}
                     </span>
                   </div>
