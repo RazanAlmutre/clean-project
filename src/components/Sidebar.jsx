@@ -24,7 +24,12 @@ export default function Sidebar({ presentCount, absentCount }) {
 
   return (
     <>
-      <button className="adm-burger" onClick={() => setOpen(true)} aria-label="Open menu">
+      <button
+        className="adm-burger"
+        style={{ display: open ? "none" : undefined }}
+        onClick={() => setOpen(true)}
+        aria-label="Open menu"
+      >
         <Menu size={22} />
       </button>
 
