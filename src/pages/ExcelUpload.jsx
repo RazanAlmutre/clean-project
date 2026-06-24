@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExcelJS from "exceljs";
 import { supabase } from "../lib/supabase";
 import { UploadCloud, FileSpreadsheet } from "lucide-react";
@@ -7,8 +7,20 @@ import Confetti from "../components/Confetti";
 import "../Styles/admin.css";
 
 export default function ExcelUpload() {
-  const [file, setFile] = useState(null);
+   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [counts, setCounts] = useState({ present: null, absent: null });
+
+  useEffect(() => {
+    (async () => {
+      const { count: total } = await supabase
+        .from("students")
+        .select("*", { count: "exact", head: true });
+      const { data: att } = await supabase.from("attendance").select("student_id");
+      const present = new Set((att || []).map((a) => Number(a.student_id))).size;
+      setCounts({ present, absent: Math.max((total || 0) - present, 0) });
+    })();
+  }, []);
 
   const handleUpload = async () => {
     try {
@@ -94,7 +106,7 @@ export default function ExcelUpload() {
 
   return (
     <div className="adm-shell">
-      <Sidebar />
+      <Sidebar presentCount={counts.present} absentCount={counts.absent} />
 
       <main className="adm-main">
         <header className="adm-header">
