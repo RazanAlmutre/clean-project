@@ -233,3 +233,19 @@
     overflow-y:auto;
   }
 }
+.adm-delete-btn {
+  border: none;
+  background: #fff1f1;
+  color: #d10000;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adm-delete-btn:hover {
+  background: #ffe1e1;
+}
