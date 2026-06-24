@@ -217,7 +217,10 @@ export default function Dashboard() {
                       </span>
                     )}
 
-                    <span className="sr tm" style={{ color: "#0B2A5E" }}>
+                    <span
+                      className="sr tm"
+                      style={{ color: s.late ? "#ee0703" : "#0B2A5E" }}
+                    >
                       {s.time}
                     </span>
                   </div>
