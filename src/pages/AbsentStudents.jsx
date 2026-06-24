@@ -18,11 +18,17 @@ export default function AbsentStudents() {
   const [confirmStudent, setConfirmStudent] = useState(null);
 
   useEffect(() => {
-    fetchAbsentStudents();
+    fetchAbsentStudents(true);
+
+    const interval = setInterval(() => {
+      fetchAbsentStudents(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchAbsentStudents = async () => {
-    setLoading(true);
+  const fetchAbsentStudents = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
 
     let allStudents = [];
     let from = 0;
@@ -65,7 +71,12 @@ export default function AbsentStudents() {
 
     setTotal(allStudents.length);
     setStudents(absent);
-    setCurrentPage(1);
+
+    setCurrentPage((page) => {
+      const newTotalPages = Math.max(1, Math.ceil(absent.length / PAGE_SIZE));
+      return Math.min(page, newTotalPages);
+    });
+
     setLoading(false);
   };
 
@@ -89,7 +100,7 @@ export default function AbsentStudents() {
     }
 
     setConfirmStudent(null);
-    await fetchAbsentStudents();
+    await fetchAbsentStudents(false);
   };
 
   const handleStatusChange = (student, value) => {
