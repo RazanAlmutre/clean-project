@@ -8,62 +8,63 @@ export default function Charts() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
-useEffect(() => {
-  let isMounted = true;
 
-  const fetchData = async (showLoading = false) => {
-    if (showLoading) setLoading(true);
+  useEffect(() => {
+    let isMounted = true;
 
-    let all = [];
-    let from = 0;
-    const pageSize = 1000;
+    const fetchData = async (showLoading = false) => {
+      if (showLoading) setLoading(true);
 
-    while (true) {
-      const { data } = await supabase
-        .from("students")
-        .select("*")
-        .order("id", { ascending: true })
-        .range(from, from + pageSize - 1);
+      let all = [];
+      let from = 0;
+      const pageSize = 1000;
 
-      all = [...all, ...(data || [])];
+      while (true) {
+        const { data } = await supabase
+          .from("students")
+          .select("*")
+          .order("id", { ascending: true })
+          .range(from, from + pageSize - 1);
 
-      if (!data || data.length < pageSize) break;
-      from += pageSize;
-    }
+        all = [...all, ...(data || [])];
 
-    let allAttendance = [];
-    let attFrom = 0;
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
 
-    while (true) {
-      const { data: att } = await supabase
-        .from("attendance")
-        .select("student_id")
-        .range(attFrom, attFrom + pageSize - 1);
+      let allAttendance = [];
+      let attFrom = 0;
 
-      allAttendance = [...allAttendance, ...(att || [])];
+      while (true) {
+        const { data: att } = await supabase
+          .from("attendance")
+          .select("student_id")
+          .range(attFrom, attFrom + pageSize - 1);
 
-      if (!att || att.length < pageSize) break;
-      attFrom += pageSize;
-    }
+        allAttendance = [...allAttendance, ...(att || [])];
 
-    if (!isMounted) return;
+        if (!att || att.length < pageSize) break;
+        attFrom += pageSize;
+      }
 
-    setStudents(all);
-    setAttendance(allAttendance);
-    setLoading(false);
-  };
+      if (!isMounted) return;
 
-  fetchData(true);
+      setStudents(all);
+      setAttendance(allAttendance);
+      setLoading(false);
+    };
 
-  const interval = setInterval(() => {
-    fetchData(false);
-  }, 5000);
+    fetchData(true);
 
-  return () => {
-    isMounted = false;
-    clearInterval(interval);
-  };
-}, []);
+    const interval = setInterval(() => {
+      fetchData(false);
+    }, 5000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const { present, absent, total, rate, byDegree } = useMemo(() => {
     const ids = new Set(attendance.map((a) => Number(a.student_id)));
@@ -79,6 +80,7 @@ useEffect(() => {
       groups[d].total += 1;
       if (ids.has(Number(s.id))) groups[d].present += 1;
     });
+
     const byDegree = Object.values(groups)
       .sort((a, b) => b.total - a.total)
       .slice(0, 8);
@@ -109,8 +111,7 @@ useEffect(() => {
           {loading ? (
             <div className="adm-loading">Loading…</div>
           ) : (
-                        <div className="adm-charts-grid">
-
+            <div className="adm-charts-grid">
               {/* rate ring */}
               <div
                 className="sd-card"
