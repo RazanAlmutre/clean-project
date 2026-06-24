@@ -14,6 +14,8 @@ export default function AbsentStudents() {
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [markingId, setMarkingId] = useState(null);
+  const [confirmStudent, setConfirmStudent] = useState(null);
 
   useEffect(() => {
     fetchAbsentStudents();
@@ -55,7 +57,9 @@ export default function AbsentStudents() {
       return;
     }
 
-    const presentIds = new Set(attendanceData.map((i) => Number(i.student_id)));
+    const presentIds = new Set(
+      (attendanceData || []).map((i) => Number(i.student_id))
+    );
 
     const absent = allStudents.filter((s) => !presentIds.has(Number(s.id)));
 
@@ -65,6 +69,34 @@ export default function AbsentStudents() {
     setLoading(false);
   };
 
+  const markPresent = async (studentDbId) => {
+    setMarkingId(studentDbId);
+
+    const { error } = await supabase.from("attendance").upsert(
+      {
+        student_id: Number(studentDbId),
+      },
+      {
+        onConflict: "student_id,attendance_date",
+      }
+    );
+
+    setMarkingId(null);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setConfirmStudent(null);
+    await fetchAbsentStudents();
+  };
+
+  const handleStatusChange = (student, value) => {
+    if (value !== "present") return;
+    setConfirmStudent(student);
+  };
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return students;
@@ -72,9 +104,7 @@ export default function AbsentStudents() {
     return students.filter(
       (s) =>
         (s.student_name || "").toLowerCase().includes(q) ||
-        String(s.student_id || "")
-          .toLowerCase()
-          .includes(q),
+        String(s.student_id || "").toLowerCase().includes(q)
     );
   }, [students, query]);
 
@@ -198,12 +228,31 @@ export default function AbsentStudents() {
                 paginatedStudents.map((s) => (
                   <div key={s.id} className="adm-row">
                     <CapAvatar name={s.student_name} size={40} tone="amber" />
+
                     <span className="nm" style={{ color: "#5a6b86" }}>
                       {s.student_name}
                     </span>
+
                     <span className="sr">#{s.student_id}</span>
+
                     <span className="cl">{s.degree || "—"}</span>
-                    <span className="pill-absent">Not yet</span>
+
+                    <select
+                      value="not_yet"
+                      onChange={(e) => handleStatusChange(s, e.target.value)}
+                      disabled={markingId === s.id}
+                      className="pill-absent"
+                      style={{
+                        border: "none",
+                        outline: "none",
+                        cursor: markingId === s.id ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      <option value="not_yet">
+                        {markingId === s.id ? "Saving..." : "Not yet"}
+                      </option>
+                      <option value="present">Present</option>
+                    </select>
                   </div>
                 ))
               )}
@@ -240,6 +289,38 @@ export default function AbsentStudents() {
             )}
           </div>
         </div>
+
+        {confirmStudent && (
+          <div className="confirm-overlay">
+            <div className="confirm-box">
+              <h3>Mark as attended?</h3>
+
+              <p>
+                Are you sure you want to mark{" "}
+                <strong>{confirmStudent.student_name}</strong> as attended?
+              </p>
+
+              <div className="confirm-actions">
+                <button
+                  className="confirm-cancel"
+                  onClick={() => setConfirmStudent(null)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="confirm-save"
+                  onClick={() => markPresent(confirmStudent.id)}
+                  disabled={markingId === confirmStudent.id}
+                >
+                  {markingId === confirmStudent.id
+                    ? "Saving..."
+                    : "Yes, mark attended"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
