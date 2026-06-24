@@ -8,31 +8,62 @@ export default function Charts() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
+useEffect(() => {
+  let isMounted = true;
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      let all = [];
-      let from = 0;
-      const pageSize = 1000;
-      while (true) {
-        const { data } = await supabase
-          .from("students")
-          .select("*")
-          .order("id", { ascending: true })
-          .range(from, from + pageSize - 1);
-        all = [...all, ...(data || [])];
-        if (!data || data.length < pageSize) break;
-        from += pageSize;
-      }
+  const fetchData = async (showLoading = false) => {
+    if (showLoading) setLoading(true);
+
+    let all = [];
+    let from = 0;
+    const pageSize = 1000;
+
+    while (true) {
+      const { data } = await supabase
+        .from("students")
+        .select("*")
+        .order("id", { ascending: true })
+        .range(from, from + pageSize - 1);
+
+      all = [...all, ...(data || [])];
+
+      if (!data || data.length < pageSize) break;
+      from += pageSize;
+    }
+
+    let allAttendance = [];
+    let attFrom = 0;
+
+    while (true) {
       const { data: att } = await supabase
         .from("attendance")
-        .select("student_id");
-      setStudents(all);
-      setAttendance(att || []);
-      setLoading(false);
-    })();
-  }, []);
+        .select("student_id")
+        .range(attFrom, attFrom + pageSize - 1);
+
+      allAttendance = [...allAttendance, ...(att || [])];
+
+      if (!att || att.length < pageSize) break;
+      attFrom += pageSize;
+    }
+
+    if (!isMounted) return;
+
+    setStudents(all);
+    setAttendance(allAttendance);
+    setLoading(false);
+  };
+
+  fetchData(true);
+
+  const interval = setInterval(() => {
+    fetchData(false);
+  }, 5000);
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, []);
 
   const { present, absent, total, rate, byDegree } = useMemo(() => {
     const ids = new Set(attendance.map((a) => Number(a.student_id)));
