@@ -15,7 +15,7 @@ export default function AbsentStudents() {
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [markingId, setMarkingId] = useState(null);
-  const [confirmStudent, setConfirmStudent] = useState(null);
+  
 
   useEffect(() => {
     fetchAbsentStudents(true);
@@ -99,13 +99,13 @@ export default function AbsentStudents() {
       return;
     }
 
-    setConfirmStudent(null);
-    await fetchAbsentStudents(false);
+        await fetchAbsentStudents(false);
+
   };
 
   const handleStatusChange = (student, value) => {
     if (value !== "present") return;
-    setConfirmStudent(student);
+    markPresent(student.id);
   };
 
   const filtered = useMemo(() => {
@@ -301,37 +301,6 @@ export default function AbsentStudents() {
           </div>
         </div>
 
-        {confirmStudent && (
-          <div className="confirm-overlay">
-            <div className="confirm-box">
-              <h3>Mark as attended?</h3>
-
-              <p>
-                Are you sure you want to mark{" "}
-                <strong>{confirmStudent.student_name}</strong> as attended?
-              </p>
-
-              <div className="confirm-actions">
-                <button
-                  className="confirm-cancel"
-                  onClick={() => setConfirmStudent(null)}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  className="confirm-save"
-                  onClick={() => markPresent(confirmStudent.id)}
-                  disabled={markingId === confirmStudent.id}
-                >
-                  {markingId === confirmStudent.id
-                    ? "Saving..."
-                    : "Yes, mark attended"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
