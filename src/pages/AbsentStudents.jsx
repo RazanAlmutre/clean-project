@@ -83,24 +83,23 @@ export default function AbsentStudents() {
   const markPresent = async (studentDbId) => {
     setMarkingId(studentDbId);
 
-    const { error } = await supabase.from("attendance").upsert(
-      {
-        student_id: Number(studentDbId),
-      },
-      {
-        onConflict: "student_id,attendance_date",
-      }
-    );
+    // absent students have no attendance row yet, so a plain insert works
+    // (only needs the INSERT policy — avoids the upsert/UPDATE-policy issue)
+    const { error } = await supabase.from("attendance").insert({
+      student_id: Number(studentDbId),
+    });
 
     setMarkingId(null);
 
-    if (error) {
+    // 23505 = duplicate (already present) → treat as success
+    if (error && error.code !== "23505") {
       alert(error.message);
       return;
     }
 
-        await fetchAbsentStudents(false);
-
+    // remove immediately, then refresh from the server
+    setStudents((prev) => prev.filter((s) => s.id !== studentDbId));
+    await fetchAbsentStudents(false);
   };
 
   const handleStatusChange = (student, value) => {
