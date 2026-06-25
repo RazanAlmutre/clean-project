@@ -261,4 +261,26 @@
   .adm-list-main{
     overflow-y:auto;
   }
+  /* ===== remove-attendance button + delete confirm popup ===== */
+.present-action{ display:flex; align-items:center; gap:10px; justify-self:end; }
+.remove-attendance{ width:30px; height:30px; flex:none; display:flex; align-items:center; justify-content:center;
+  border:none; border-radius:9px; cursor:pointer; color:#d4424b; background:#fdeaec; transition:background .15s, transform .15s; }
+.remove-attendance:hover{ background:#fbd5da; transform:scale(1.05); }
+
+.delete-modal-overlay{ position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
+  padding:20px; background:rgba(11,28,60,.5); backdrop-filter:blur(2px); animation:ksuFade .15s ease; }
+.delete-modal{ width:100%; max-width:420px; background:#fff; border-radius:22px; padding:30px 28px; text-align:center;
+  box-shadow:0 30px 70px -20px rgba(11,42,94,.45); animation:ksuPop .18s cubic-bezier(.2,.9,.3,1.2); }
+.delete-modal h3{ margin:0 0 10px; font-family:var(--font-head); font-weight:800; font-size:22px; color:#0B2A5E; }
+.delete-modal p{ margin:0 0 24px; font-size:14.5px; line-height:1.55; color:#5a6b86; }
+.delete-modal-actions{ display:flex; gap:12px; }
+.delete-modal-actions button{ flex:1; padding:13px 16px; border-radius:14px; font-family:var(--font-head); font-weight:700;
+  font-size:14.5px; cursor:pointer; border:none; transition:transform .12s, box-shadow .15s, background .15s; }
+.cancel-btn{ background:#eef2f7; color:#34415c; }
+.cancel-btn:hover{ background:#e2e8f1; }
+.confirm-btn{ background:#e23b46; color:#fff; box-shadow:0 10px 22px -6px rgba(226,59,70,.65); }
+.confirm-btn:hover{ background:#cf2f3a; box-shadow:0 14px 28px -6px rgba(226,59,70,.8); transform:translateY(-1px); }
+
+@keyframes ksuFade{ from{opacity:0} to{opacity:1} }
+@keyframes ksuPop{ from{opacity:0; transform:scale(.92) translateY(8px)} to{opacity:1; transform:scale(1) translateY(0)} }
 }
