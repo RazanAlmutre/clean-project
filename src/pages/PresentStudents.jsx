@@ -318,19 +318,61 @@ export default function PresentStudents() {
         </div>
       </main>
 
-      {showDeleteModal && (
-        <div className="delete-modal-overlay">
-          <div className="delete-modal">
-            <h3>Are you sure?</h3>
+          {showDeleteModal && (
+        <div
+          onClick={closeDeleteModal}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20,
+            background: "rgba(11,28,60,.5)",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              background: "#fff",
+              borderRadius: 22,
+              padding: "30px 28px",
+              textAlign: "center",
+              boxShadow: "0 30px 70px -20px rgba(11,42,94,.45)",
+            }}
+          >
+            <h3 style={{ margin: "0 0 10px", fontWeight: 800, fontSize: 22, color: "#0B2A5E" }}>
+              Are you sure?
+            </h3>
 
-            <p>Do you want to remove this student's attendance?</p>
+            <p style={{ margin: "0 0 24px", fontSize: 14.5, lineHeight: 1.55, color: "#5a6b86" }}>
+              Do you want to remove this student's attendance?
+            </p>
 
-            <div className="delete-modal-actions">
-              <button className="cancel-btn" onClick={closeDeleteModal}>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button
+                onClick={closeDeleteModal}
+                style={{
+                  flex: 1, padding: "13px 16px", borderRadius: 14, border: "none",
+                  cursor: "pointer", fontWeight: 700, fontSize: 14.5,
+                  background: "#eef2f7", color: "#34415c",
+                }}
+              >
                 Cancel
               </button>
 
-              <button className="confirm-btn" onClick={deleteAttendance}>
+              <button
+                onClick={deleteAttendance}
+                style={{
+                  flex: 1, padding: "13px 16px", borderRadius: 14, border: "none",
+                  cursor: "pointer", fontWeight: 700, fontSize: 14.5,
+                  background: "#e23b46", color: "#fff",
+                  boxShadow: "0 10px 22px -6px rgba(226,59,70,.65)",
+                }}
+              >
                 Yes, remove
               </button>
             </div>
